@@ -1,6 +1,69 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+html, body, #root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #ffffff;
+}
 
 body {
-  background-color: #ffffff;
   color: #333;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ─── Smooth Scrollbar ─── */
+.right-scroll::-webkit-scrollbar { width: 5px; }
+.right-scroll::-webkit-scrollbar-track { background: #f0f0f0; }
+.right-scroll::-webkit-scrollbar-thumb { background: #ccc; border-radius: 999px; }
+.right-scroll::-webkit-scrollbar-thumb:hover { background: #00b0f0; }
+
+/* ─── Accordion — simple max-height transition ─── */
+.acc-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.acc-body.open {
+  max-height: 1200px;
+}
+
+/* ─── Swatch hover ─── */
+.swatch {
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  cursor: pointer;
+}
+.swatch:hover { transform: scale(1.2); z-index: 5; }
+
+/* ─── Fade up ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.25s ease both; }
+
+/* ─── Tab underline ─── */
+.tab-item { position: relative; transition: color 0.2s; }
+.tab-item::after {
+  content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+  height: 2px; background: #00b0f0; border-radius: 2px;
+  transform: scaleX(0); transition: transform 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+.tab-item.active::after { transform: scaleX(1); }
+.tab-item.active { color: #00b0f0; }
+
+/* ─── Gradient preview ─── */
+.gradient-preview { transition: background 0.4s ease; }
+
+/* ─── Loc label pill ─── */
+.loc-label {
+  display: inline-block;
+  background: #f0f9ff; color: #0284c7;
+  font-size: 9px; font-weight: 800;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 999px;
+  border: 1px solid #bae6fd;
 }
