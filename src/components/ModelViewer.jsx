@@ -219,7 +219,7 @@ const ModelViewer = ({
         <Suspense fallback={null}>
           <Center>
             <Model 
-              url="/src/assets/shirt.glb" 
+              url="/shirt.glb" 
               shirtColor={shirtColor} 
               isGradientActive={isGradientActive} 
               gradientColor1={gradientColor1} 
