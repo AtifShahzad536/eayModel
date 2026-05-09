@@ -1,5 +1,6 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
 
 html, body, #root {
   width: 100vw;
@@ -66,4 +67,22 @@ body {
   letter-spacing: 0.1em; text-transform: uppercase;
   padding: 2px 8px; border-radius: 999px;
   border: 1px solid #bae6fd;
+}
+
+/* ─── Loader Animations ─── */
+@keyframes loader-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(0.95); }
+}
+.animate-loader-spin { animation: loader-spin 2s linear infinite; }
+.animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+
+.glass-loader {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }

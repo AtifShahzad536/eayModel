@@ -21,12 +21,21 @@ const Navbar = () => {
       label: 'File',
       icon: <HiOutlineFolderOpen className="text-lg" />,
       items: [
-        { label: 'Import Model (.glb)', icon: <HiOutlineCubeTransparent />, action: () => {
-          const input = document.createElement('input');
-          input.type = 'file';
-          input.accept = '.glb,.gltf';
-          input.click();
-        }},
+        {
+          label: 'Import Model (.glb)', icon: <HiOutlineCubeTransparent />, action: () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.glb,.gltf';
+            input.onchange = (e) => {
+              const file = e.target.files[0];
+              if (file) {
+                const url = URL.createObjectURL(file);
+                window.dispatchEvent(new CustomEvent('eay:importModel', { detail: url }));
+              }
+            };
+            input.click();
+          }
+        },
         { label: 'Save Design', icon: <HiOutlineSaveAs />, action: () => window.dispatchEvent(new CustomEvent('eay:save')) },
         { label: 'Export PNG', icon: <HiOutlineDownload />, action: () => window.dispatchEvent(new CustomEvent('eay:export')) },
       ]
