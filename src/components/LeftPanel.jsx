@@ -14,18 +14,22 @@ const ToolBtn = ({ icon, label, onClick, active = false }) => (
   </button>
 );
 
-const LeftPanel = ({ 
-  modelUrl, 
-  meshes, 
-  activeMesh, 
-  setActiveMesh, 
-  meshStates, 
+const LeftPanel = ({
+  modelUrl,
+  meshes,
+  activeMesh,
+  setActiveMesh,
+  meshStates,
   onMeshesDetected,
   decals,
   selectedDecalId,
   setSelectedDecalId,
   updateDecal,
-  removeDecal
+  removeDecal,
+  globalPattern,
+  materialFinish,
+  lightingPreset,
+  mouseFollow
 }) => {
   return (
     <div className="flex-shrink-0 md:flex-1 flex flex-col md:flex-row overflow-hidden h-[45vh] md:h-full relative bg-white">
@@ -56,17 +60,22 @@ const LeftPanel = ({
 
       {/* ── 3D Viewport ── */}
       <div className="flex-1 relative bg-white">
-        <ModelViewer 
-          modelUrl={modelUrl} 
-          meshStates={meshStates} 
+        <ModelViewer
+          modelUrl={modelUrl}
+          meshStates={meshStates}
           onMeshesDetected={onMeshesDetected}
           decals={decals}
           selectedDecalId={selectedDecalId}
           setSelectedDecalId={setSelectedDecalId}
           updateDecal={updateDecal}
           removeDecal={removeDecal}
+          // Global Props
+          globalPattern={globalPattern}
+          materialFinish={materialFinish}
+          lightingPreset={lightingPreset}
+          mouseFollow={mouseFollow}
         />
-        
+
         {/* Helper overlay */}
         <div className="absolute top-4 left-4 pointer-events-none select-none z-10">
           <div className="flex items-center gap-3 p-1.5 bg-white/80 backdrop-blur-md rounded-full border border-black/5 shadow-sm">

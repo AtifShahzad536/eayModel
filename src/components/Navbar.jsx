@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { HiOutlineFolderOpen, HiOutlineSaveAs, HiOutlineDownload, HiOutlineCubeTransparent } from 'react-icons/hi';
 import { VscHistory, VscEdit } from 'react-icons/vsc';
 
-const Navbar = () => {
+const Navbar = ({ onBack }) => {
   const [activeMenu, setActiveMenu] = useState(null);
   const barRef = useRef(null);
 
@@ -57,9 +57,19 @@ const Navbar = () => {
     >
       {/* App Branding */}
       <div className="flex items-center px-4 gap-2 border-r border-[#e0e0e0]">
-        <div className="w-4 h-4 bg-[#00b0f0] rounded-sm flex items-center justify-center">
-          <span className="text-white font-black text-[9px] leading-none">E</span>
-        </div>
+        {onBack ? (
+          <button 
+            onClick={onBack}
+            className="flex items-center gap-1.5 px-2 py-0.5 hover:bg-gray-200 rounded transition-colors mr-2 group"
+          >
+            <span className="text-[10px] text-gray-400 group-hover:text-blue-500 transition-colors">◀</span>
+            <span className="text-[9px] font-black text-gray-400 group-hover:text-gray-900 uppercase tracking-tighter transition-colors">Back</span>
+          </button>
+        ) : (
+          <div className="w-4 h-4 bg-[#00b0f0] rounded-sm flex items-center justify-center">
+            <span className="text-white font-black text-[9px] leading-none">E</span>
+          </div>
+        )}
         <span className="text-[11px] font-bold text-[#222] tracking-tight">EAY Builder</span>
       </div>
 

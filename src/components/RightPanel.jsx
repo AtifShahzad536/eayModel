@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BiCube, BiPalette, BiText, BiImage, BiCart } from 'react-icons/bi';
-import { HiOutlineSparkles, HiOutlinePhotograph } from 'react-icons/hi';
+import { HiOutlineSparkles, HiOutlinePhotograph, HiOutlineCube, HiOutlineLightningBolt, HiOutlineColorSwatch, HiOutlineCursorClick, HiOutlineAdjustments, HiOutlineUserAdd, HiOutlineTrash, HiOutlinePlus, HiOutlineMinus, HiOutlineChevronDown } from 'react-icons/hi';
 import { VscSymbolColor } from 'react-icons/vsc';
 
 const colors = [
@@ -158,7 +158,7 @@ const NamesNumbersTab = ({ decals, selectedDecalId, setSelectedDecalId, addDecal
   const renderColorGrid = (targetProp) => (
     <div className="flex flex-wrap gap-2">
       {colors.map((c, i) => (
-        <button 
+        <button
           key={c.hex + i}
           onClick={() => safeUpdate({ [targetProp]: c.hex })}
           className={`w-7 h-7 rounded-full border-2 cursor-pointer transition-all hover:scale-125 active:scale-90 ${selected?.[targetProp] === c.hex ? 'border-[#00b0f0] scale-110 shadow-lg ring-2 ring-blue-100' : 'border-gray-200 hover:border-gray-400'}`}
@@ -174,7 +174,7 @@ const NamesNumbersTab = ({ decals, selectedDecalId, setSelectedDecalId, addDecal
     const isOpen = openSection === id;
     return (
       <div key={id} className={`bg-white border-b border-gray-100 ${isLocked ? 'opacity-40 pointer-events-none' : ''}`}>
-        <button 
+        <button
           onClick={() => { if (!isLocked) setOpenSection(isOpen ? null : id); }}
           className={`w-full flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors cursor-pointer ${isOpen ? 'bg-gray-50' : ''}`}
         >
@@ -192,7 +192,7 @@ const NamesNumbersTab = ({ decals, selectedDecalId, setSelectedDecalId, addDecal
 
   return (
     <div className="flex flex-col bg-gray-50 h-full overflow-y-auto right-scroll">
-      
+
       {/* 1. LAYER LIST */}
       <div className="p-5 bg-white border-b border-gray-100">
         <h3 className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center justify-between">
@@ -201,14 +201,14 @@ const NamesNumbersTab = ({ decals, selectedDecalId, setSelectedDecalId, addDecal
         </h3>
         <div className="space-y-2">
           {decals.map(d => (
-            <div 
+            <div
               key={d.id}
               onClick={() => setSelectedDecalId(d.id)}
               className={`p-3 rounded-xl border-2 cursor-pointer transition-all flex items-center justify-between bg-white ${selectedDecalId === d.id ? 'border-[#00b0f0] shadow-md scale-[1.02]' : 'border-gray-100 hover:border-gray-200'}`}
             >
               <div className="flex flex-col">
                 <span className="text-xs font-black truncate">{d.text || 'EMPTY'}</span>
-                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-tighter">{d.font} • SIZE {((d.decalScale || 0.15)*100).toFixed(0)}%</span>
+                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-tighter">{d.font} • SIZE {((d.decalScale || 0.15) * 100).toFixed(0)}%</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded-full border border-gray-100" style={{ backgroundColor: d.color }} />
@@ -227,8 +227,8 @@ const NamesNumbersTab = ({ decals, selectedDecalId, setSelectedDecalId, addDecal
       {/* 2. ADD TEXT */}
       <div className="bg-white p-5 border-b border-gray-100 shadow-sm relative z-10">
         <div className="flex gap-2 mb-2">
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="TYPE HERE..."
             className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-xs font-bold focus:border-[#00b0f0] outline-none transition-all"
             onChange={(e) => {
@@ -239,7 +239,7 @@ const NamesNumbersTab = ({ decals, selectedDecalId, setSelectedDecalId, addDecal
             onKeyDown={(e) => { if (e.key === 'Enter') addDecal('text', localText || 'TEAM NAME'); }}
             value={localText}
           />
-          <button 
+          <button
             onClick={() => addDecal('text', localText || 'TEAM NAME')}
             className="px-6 bg-gray-800 text-white rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all active:scale-95"
           >
@@ -267,7 +267,7 @@ const NamesNumbersTab = ({ decals, selectedDecalId, setSelectedDecalId, addDecal
               <p className="text-[9px] font-black text-gray-400 uppercase mb-3">Sports Typography</p>
               <div className="grid grid-cols-2 gap-2">
                 {fonts.map(f => (
-                  <button 
+                  <button
                     key={f}
                     onClick={() => safeUpdate({ font: f })}
                     className={`py-3 rounded-lg border-2 text-[10px] font-black cursor-pointer transition-all ${selected?.font === f ? 'border-[#00b0f0] bg-blue-50 text-[#00b0f0]' : 'border-gray-100 text-gray-500 hover:border-gray-300'}`}
@@ -316,7 +316,7 @@ const NamesNumbersTab = ({ decals, selectedDecalId, setSelectedDecalId, addDecal
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-white shadow-sm">
               <span className="text-[10px] font-black text-gray-700 uppercase tracking-wider">Arch Effect</span>
-              <button 
+              <button
                 onClick={() => safeUpdate({ effect: selected?.effect === 'arch' ? 'none' : 'arch' })}
                 className={`w-12 h-6 rounded-full transition-colors relative shadow-inner cursor-pointer ${selected?.effect === 'arch' ? 'bg-[#00b0f0]' : 'bg-gray-200'}`}
               >
@@ -327,7 +327,7 @@ const NamesNumbersTab = ({ decals, selectedDecalId, setSelectedDecalId, addDecal
               <div className="p-4 bg-white rounded-xl border border-gray-100 space-y-4">
                 <div className="flex items-center justify-between">
                   <p className="text-[9px] font-black text-gray-400 uppercase">Bend Intensity</p>
-                  <span className="text-[10px] font-bold text-[#00b0f0]">{((selected?.effectIntensity || 0.5)*100).toFixed(0)}%</span>
+                  <span className="text-[10px] font-bold text-[#00b0f0]">{((selected?.effectIntensity || 0.5) * 100).toFixed(0)}%</span>
                 </div>
                 <input type="range" min="0.1" max="1.5" step="0.1" className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#00b0f0]" value={selected?.effectIntensity || 0.5} onChange={(e) => safeUpdate({ effectIntensity: parseFloat(e.target.value) })} />
               </div>
@@ -356,14 +356,14 @@ const NamesNumbersTab = ({ decals, selectedDecalId, setSelectedDecalId, addDecal
 };
 
 // ─── LOGOS & FLAGS TAB ─────────────────────────────────────────────────────────
-import { 
+import {
   BiImageAdd, BiFlag, BiFootball, BiChevronRight, BiPlus, BiTrash,
   BiWater, BiMapAlt, BiDna, BiBug, BiCamera, BiUserCircle, BiGhost, BiStar, BiHeart
 } from 'react-icons/bi';
 import { FaPaw, FaCat, FaCrow, FaHippo, FaHorse } from 'react-icons/fa';
 
 const logoCategories = [
-  { 
+  {
     name: 'TAIL SWEEP', icon: <BiWater />,
     items: [
       { name: 'Classic Swoosh', url: 'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/svgs/solid/wind.svg' },
@@ -371,7 +371,7 @@ const logoCategories = [
       { name: 'Power Line', url: 'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/svgs/solid/bolt.svg' }
     ]
   },
-  { 
+  {
     name: 'FLAGS & SYMBOLS', icon: <BiFlag />,
     items: [
       { name: 'USA Flag', url: 'https://flagcdn.com/us.svg' },
@@ -380,7 +380,7 @@ const logoCategories = [
       { name: 'Shield', url: 'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/svgs/solid/shield-halved.svg' }
     ]
   },
-  { 
+  {
     name: 'SPORT BALLS & ICONS', icon: <BiFootball />,
     items: [
       { name: 'Basketball', url: 'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/svgs/solid/basketball.svg' },
@@ -389,7 +389,7 @@ const logoCategories = [
       { name: 'Trophy', url: 'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/svgs/solid/trophy.svg' }
     ]
   },
-  { 
+  {
     name: 'WOLVES & DOGS', icon: <FaPaw />,
     items: [
       { name: 'Wolf Head', url: 'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/svgs/solid/dog.svg' },
@@ -504,10 +504,10 @@ const LogosFlagsTab = ({ decals, selectedDecalId, setSelectedDecalId, addDecal, 
                       onClick={() => addDecal('image', item.name, item.url)}
                       className="aspect-square bg-gray-50 border border-gray-100 rounded-lg p-2 hover:border-[#00b0f0] hover:bg-blue-50 transition-all flex flex-col items-center justify-center gap-1 group cursor-pointer"
                     >
-                      <img 
-                        src={item.url} 
-                        alt={item.name} 
-                        className="w-full h-full object-contain opacity-60 group-hover:opacity-100 transition-opacity" 
+                      <img
+                        src={item.url}
+                        alt={item.name}
+                        className="w-full h-full object-contain opacity-60 group-hover:opacity-100 transition-opacity"
                         loading="lazy"
                       />
                       <span className="text-[6px] font-black text-gray-400 uppercase truncate w-full text-center group-hover:text-[#00b0f0]">{item.name}</span>
@@ -528,17 +528,264 @@ const LogosFlagsTab = ({ decals, selectedDecalId, setSelectedDecalId, addDecal, 
   );
 };
 
+// ─── STUDIO CONFIG TAB (NEW) ──────────────────────────────────────────────────
+const StudioConfigTab = ({ 
+  globalPattern, setGlobalPattern, 
+  lightingPreset, setLightingPreset, 
+  materialFinish, setMaterialFinish, 
+  mouseFollow, setMouseFollow 
+}) => {
+  const [openSection, setOpenSection] = useState('pattern');
+
+  const renderSection = (id, label, icon, content) => {
+    const isOpen = openSection === id;
+    return (
+      <div className="bg-white border-b border-gray-100">
+        <button
+          onClick={() => setOpenSection(isOpen ? null : id)}
+          className={`w-full flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors cursor-pointer ${isOpen ? 'bg-gray-50' : ''}`}
+        >
+          <div className="flex items-center gap-3">
+            <span className={`text-lg ${isOpen ? 'text-[#00b0f0]' : 'text-gray-400'}`}>{icon}</span>
+            <span className={`text-[10px] font-black uppercase tracking-widest ${isOpen ? 'text-[#00b0f0]' : 'text-gray-700'}`}>{label}</span>
+          </div>
+          <span className={`text-[10px] transition-transform duration-300 ${isOpen ? 'rotate-45 text-[#00b0f0]' : 'text-gray-300'}`}>＋</span>
+        </button>
+        {isOpen && <div className="p-5 bg-white animate-fade-in">{content}</div>}
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex flex-col bg-gray-50 h-full overflow-y-auto right-scroll">
+      
+      {renderSection('pattern', 'Fabric Patterns', <HiOutlineCube />, (
+        <div className="grid grid-cols-2 gap-2">
+          {['none', 'carbon', 'camo', 'dots'].map(p => (
+            <button 
+              key={p} 
+              onClick={() => setGlobalPattern(p === 'none' ? null : p)} 
+              className={`py-3 rounded-xl text-[9px] font-black uppercase tracking-widest border-2 transition-all ${globalPattern === p || (p === 'none' && !globalPattern) ? 'border-[#00b0f0] bg-blue-50 text-[#00b0f0] shadow-sm' : 'border-gray-100 text-gray-400 hover:border-gray-300'}`}
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+      ))}
+
+      {renderSection('finish', 'Material Finish', <HiOutlineColorSwatch />, (
+        <div className="grid grid-cols-3 gap-2">
+          {['matte', 'gloss', 'metallic'].map(f => (
+            <button 
+              key={f} 
+              onClick={() => setMaterialFinish(f)} 
+              className={`py-3 rounded-xl text-[9px] font-black uppercase tracking-widest border-2 transition-all ${materialFinish === f ? 'border-[#00b0f0] bg-blue-50 text-[#00b0f0] shadow-sm' : 'border-gray-100 text-gray-400 hover:border-gray-300'}`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+      ))}
+
+      {renderSection('lighting', 'Lighting Rig', <HiOutlineLightningBolt />, (
+        <div className="grid grid-cols-3 gap-2">
+          {['city', 'studio', 'night'].map(l => (
+            <button 
+              key={l} 
+              onClick={() => setLightingPreset(l)} 
+              className={`py-3 rounded-xl text-[9px] font-black uppercase tracking-widest border-2 transition-all ${lightingPreset === l ? 'border-[#00b0f0] bg-blue-50 text-[#00b0f0] shadow-sm' : 'border-gray-100 text-gray-400 hover:border-gray-300'}`}
+            >
+              {l}
+            </button>
+          ))}
+        </div>
+      ))}
+
+      {renderSection('interaction', 'Interaction', <HiOutlineCursorClick />, (
+        <div className="space-y-4">
+          <button 
+            onClick={() => setMouseFollow(!mouseFollow)} 
+            className={`w-full py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest border-2 transition-all flex items-center justify-center gap-3 ${mouseFollow ? 'bg-[#00b0f0] text-white border-[#00b0f0] shadow-lg shadow-blue-500/20' : 'bg-white text-gray-400 border-gray-200 hover:border-gray-300'}`}
+          >
+            <div className={`w-2 h-2 rounded-full ${mouseFollow ? 'bg-white animate-pulse' : 'bg-gray-200'}`} />
+            360 Mouse Follow: {mouseFollow ? 'ON' : 'OFF'}
+          </button>
+          <p className="text-[8px] text-gray-400 font-bold uppercase tracking-widest text-center px-4 leading-relaxed">
+            When ON, the model will follow your cursor for a dynamic 360 preview experience.
+          </p>
+        </div>
+      ))}
+
+    </div>
+  );
+};
+
+// ─── ROSTER / CHECKOUT TAB (NEW) ──────────────────────────────────────────────
+const CheckoutRosterTab = ({ roster, setRoster }) => {
+  const [isPersonalized, setIsPersonalized] = useState(true);
+
+  const addRow = () => {
+    setRoster([...roster, { id: Date.now(), name: '', number: '', size: 'L' }]);
+  };
+
+  const removeRow = (id) => {
+    if (roster.length <= 1) return;
+    setRoster(roster.filter(r => r.id !== id));
+  };
+
+  const updateRow = (id, field, value) => {
+    setRoster(roster.map(r => r.id === id ? { ...r, [field]: value } : r));
+  };
+
+  return (
+    <div className="flex flex-col h-full bg-gray-50 overflow-hidden">
+      <div className="p-5 bg-white border-b border-gray-100">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-800">Order Roster</h3>
+            <p className="text-[8px] font-bold text-gray-400 uppercase mt-0.5">{roster.length} Total Units</p>
+          </div>
+          <button 
+            onClick={addRow}
+            className="flex items-center gap-2 px-3 py-1.5 bg-[#00b0f0] text-white rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-[#0089bb] transition-colors shadow-lg shadow-blue-500/10"
+          >
+            <HiOutlineUserAdd /> Add Unit
+          </button>
+        </div>
+
+        {/* Personalization Toggle */}
+        <div className="flex items-center justify-between bg-gray-50 rounded-xl p-3 border border-gray-100">
+          <div className="flex items-center gap-3">
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${isPersonalized ? 'bg-blue-100 text-[#00b0f0]' : 'bg-gray-200 text-gray-400'}`}>
+              <BiText />
+            </div>
+            <div>
+              <p className="text-[9px] font-black uppercase tracking-widest text-gray-700">Personalization</p>
+              <p className="text-[7px] font-bold text-gray-400 uppercase">Names & Numbers</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => setIsPersonalized(!isPersonalized)}
+            className={`w-10 h-5 rounded-full relative transition-all duration-300 ${isPersonalized ? 'bg-[#00b0f0]' : 'bg-gray-300'}`}
+          >
+            <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all duration-300 ${isPersonalized ? 'left-6' : 'left-1'}`} />
+          </button>
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 right-scroll">
+        {roster.map((row, index) => (
+          <div key={row.id} className="bg-white rounded-xl border border-gray-100 p-3 shadow-sm relative group animate-fade-in">
+            <div className="flex items-center gap-3">
+              <div className="w-6 h-6 rounded-full bg-gray-50 flex items-center justify-center text-[9px] font-black text-gray-400 border border-gray-100 flex-shrink-0">
+                {index + 1}
+              </div>
+              
+              <div className="flex-1 grid grid-cols-12 gap-2">
+                {isPersonalized ? (
+                  <>
+                    <div className="col-span-6">
+                      <label className="text-[7px] font-black uppercase tracking-widest text-gray-400 block mb-1 ml-1">Name</label>
+                      <input 
+                        type="text" 
+                        value={row.name}
+                        onChange={(e) => updateRow(row.id, 'name', e.target.value.toUpperCase())}
+                        placeholder="PLAYER NAME"
+                        className="w-full bg-gray-50 border-none rounded-lg px-2 py-2 text-[10px] font-bold text-gray-700 placeholder:text-gray-300 focus:ring-1 focus:ring-[#00b0f0] transition-all"
+                      />
+                    </div>
+                    
+                    <div className="col-span-3">
+                      <label className="text-[7px] font-black uppercase tracking-widest text-gray-400 block mb-1 ml-1">No.</label>
+                      <input 
+                        type="text" 
+                        value={row.number}
+                        onChange={(e) => updateRow(row.id, 'number', e.target.value)}
+                        placeholder="00"
+                        maxLength={3}
+                        className="w-full bg-gray-50 border-none rounded-lg px-2 py-2 text-[10px] font-bold text-gray-700 text-center placeholder:text-gray-300 focus:ring-1 focus:ring-[#00b0f0] transition-all"
+                      />
+                    </div>
+
+                    <div className="col-span-3">
+                      <label className="text-[7px] font-black uppercase tracking-widest text-gray-400 block mb-1 ml-1">Size</label>
+                      <div className="relative">
+                        <select 
+                          value={row.size}
+                          onChange={(e) => updateRow(row.id, 'size', e.target.value)}
+                          className="w-full bg-gray-50 border-none rounded-lg px-2 py-2 text-[10px] font-bold text-gray-700 appearance-none focus:ring-1 focus:ring-[#00b0f0] transition-all cursor-pointer"
+                        >
+                          {['YS', 'YM', 'YL', 'S', 'M', 'L', 'XL', '2XL', '3XL'].map(s => (
+                            <option key={s} value={s}>{s}</option>
+                          ))}
+                        </select>
+                        <HiOutlineChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-[8px]" />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="col-span-12 flex items-center justify-between bg-gray-50 rounded-lg px-4 py-2">
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Select Unit Size</span>
+                    <div className="flex items-center gap-4">
+                      <div className="relative min-w-[80px]">
+                        <select 
+                          value={row.size}
+                          onChange={(e) => updateRow(row.id, 'size', e.target.value)}
+                          className="w-full bg-transparent border-none py-1 text-[12px] font-black text-[#00b0f0] appearance-none focus:ring-0 cursor-pointer text-right"
+                        >
+                          {['YS', 'YM', 'YL', 'S', 'M', 'L', 'XL', '2XL', '3XL'].map(s => (
+                            <option key={s} value={s}>{s}</option>
+                          ))}
+                        </select>
+                        <HiOutlineChevronDown className="absolute -right-2 top-1/2 -translate-y-1/2 text-[#00b0f0] pointer-events-none text-[8px]" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <button 
+                onClick={() => removeRow(row.id)}
+                className="w-6 h-6 rounded-lg flex items-center justify-center text-gray-300 hover:text-red-400 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+              >
+                <HiOutlineTrash />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="p-5 bg-white border-t border-gray-100">
+        <button className="w-full bg-[#00b0f0] text-white py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+          Finalize & Checkout
+          <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+        </button>
+        <p className="text-[8px] text-gray-400 font-bold uppercase tracking-widest text-center mt-3 opacity-60">
+          Review your 3D design before proceeding
+        </p>
+      </div>
+    </div>
+  );
+};
+
 // ─── MAIN RIGHT PANEL ──────────────────────────────────────────────────────────
-const RightPanel = ({ 
-  activeMesh, 
-  meshStates, 
+const RightPanel = ({
+  activeMesh,
+  meshStates,
   updateMeshProp,
   decals,
   selectedDecalId,
   setSelectedDecalId,
   addDecal,
   updateDecal,
-  removeDecal
+  removeDecal,
+  // Global Props
+  globalPattern, setGlobalPattern,
+  lightingPreset, setLightingPreset,
+  materialFinish, setMaterialFinish,
+  mouseFollow, setMouseFollow,
+  // Roster Props
+  roster, setRoster
 }) => {
   const [activeTab, setActiveTab] = useState('colors');
 
@@ -546,6 +793,7 @@ const RightPanel = ({
     { id: 'colors', label: 'Colors / Patterns', icon: <BiPalette /> },
     { id: 'names', label: 'Names / Numbers', icon: <BiText /> },
     { id: 'logos', label: 'Logos / Flags', icon: <BiImage /> },
+    { id: 'config', label: 'Studio / Config', icon: <HiOutlineAdjustments /> },
     { id: 'roster', label: 'Checkout / Roster', icon: <BiCart /> },
   ];
 
@@ -595,7 +843,7 @@ const RightPanel = ({
             accent="#00b0f0"
           />
         ) : activeTab === 'names' ? (
-          <NamesNumbersTab 
+          <NamesNumbersTab
             decals={decals}
             selectedDecalId={selectedDecalId}
             setSelectedDecalId={setSelectedDecalId}
@@ -604,7 +852,7 @@ const RightPanel = ({
             removeDecal={removeDecal}
           />
         ) : activeTab === 'logos' ? (
-          <LogosFlagsTab 
+          <LogosFlagsTab
             decals={decals}
             selectedDecalId={selectedDecalId}
             setSelectedDecalId={setSelectedDecalId}
@@ -612,16 +860,15 @@ const RightPanel = ({
             updateDecal={updateDecal}
             removeDecal={removeDecal}
           />
+        ) : activeTab === 'config' ? (
+          <StudioConfigTab
+            globalPattern={globalPattern} setGlobalPattern={setGlobalPattern}
+            lightingPreset={lightingPreset} setLightingPreset={setLightingPreset}
+            materialFinish={materialFinish} setMaterialFinish={setMaterialFinish}
+            mouseFollow={mouseFollow} setMouseFollow={setMouseFollow}
+          />
         ) : (
-          <div className="p-12 flex flex-col items-center justify-center text-center">
-            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-300 mb-4">
-              <BiCart size={28} />
-            </div>
-            <h3 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] mb-2">Checkout / Roster</h3>
-            <p className="text-[10px] text-gray-400 leading-relaxed max-w-[200px]">
-              Roster management coming soon. Add players, numbers, and sizes.
-            </p>
-          </div>
+          <CheckoutRosterTab roster={roster} setRoster={setRoster} />
         )}
       </div>
 

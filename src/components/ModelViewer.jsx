@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useMemo, useRef, useCallback } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
+import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, ContactShadows, Center, useProgress, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry.js';
@@ -10,13 +10,13 @@ const whiteTex = new THREE.CanvasTexture(document.createElement('canvas'));
 // ─── TEXT CANVAS HELPER (renders text as a texture with full styling) ────────
 function createTextCanvas(decal) {
   const { text, color, font, outline1Color, outline1Width, outline2Color, outline2Width, effect, effectIntensity } = decal;
-  
+
   const canvas = document.createElement('canvas');
   canvas.width = 1024; // High res
   canvas.height = 256;
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
+
   const fontSize = 120;
   ctx.font = `bold ${fontSize}px ${font || 'Arial'}`;
   ctx.textAlign = 'center';
@@ -42,10 +42,10 @@ function createTextCanvas(decal) {
       if (decal.tail === 'swoosh') {
         const textWidth = ctx.measureText(text).width;
         ctx.beginPath();
-        ctx.moveTo(tx - textWidth/2, ty + 20);
-        ctx.quadraticCurveTo(tx, ty + 60, tx + textWidth/2 + 20, ty + 10);
-        ctx.lineTo(tx + textWidth/2 + 15, ty + 20);
-        ctx.quadraticCurveTo(tx, ty + 70, tx - textWidth/2 - 10, ty + 25);
+        ctx.moveTo(tx - textWidth / 2, ty + 20);
+        ctx.quadraticCurveTo(tx, ty + 60, tx + textWidth / 2 + 20, ty + 10);
+        ctx.lineTo(tx + textWidth / 2 + 15, ty + 20);
+        ctx.quadraticCurveTo(tx, ty + 70, tx - textWidth / 2 - 10, ty + 25);
         ctx.closePath();
         if (isStroke) ctx.stroke();
         else ctx.fill();
@@ -58,12 +58,12 @@ function createTextCanvas(decal) {
       const totalWidth = ctx.measureText(text).width;
       const anglePerPixel = 1 / radius;
       const totalAngle = totalWidth * anglePerPixel;
-      
+
       let currentAngle = -totalAngle / 2;
-      
+
       ctx.save();
       ctx.translate(x, y + radius - 20);
-      
+
       characters.forEach(char => {
         const charWidth = ctx.measureText(char).width;
         const charAngle = charWidth * anglePerPixel;
@@ -175,7 +175,7 @@ function CoolLoader() {
 }
 
 // ─── CAMERA CONTROLLER ───────────────────────────────────────────────────────
-function CameraController() {
+function CameraController({ mouseFollow }) {
   const { camera } = useThree();
   const controlsRef = useRef();
   useEffect(() => {
@@ -205,11 +205,11 @@ function CameraController() {
       window.removeEventListener('eay:export', onExport);
     };
   }, [camera]);
-  return <OrbitControls ref={controlsRef} minPolarAngle={Math.PI / 4} maxPolarAngle={Math.PI / 1.8} />;
+  return <OrbitControls ref={controlsRef} enabled={!mouseFollow} minPolarAngle={Math.PI / 4} maxPolarAngle={Math.PI / 1.8} />;
 }
 
 // ─── MESH PART (handles color/pattern shaders) ──────────────────────────────
-function MeshPart({ node, state }) {
+function MeshPart({ node, state, finish, globalPattern }) {
   const materialRef = useRef();
 
   const material = useMemo(() => {
@@ -222,6 +222,7 @@ function MeshPart({ node, state }) {
       uHasPattern: { value: 0.0 },
       uPatternColor: { value: new THREE.Color('#ffffff') },
       uPatternTexture: { value: whiteTex },
+      uPatternType: { value: 0.0 }, // 0: none, 1: carbon, 2: camo, 3: dots
       uMinY: { value: 0 },
       uMaxY: { value: 1 }
     };
@@ -252,9 +253,20 @@ function MeshPart({ node, state }) {
         uniform float uHasPattern;
         uniform vec3 uPatternColor;
         uniform sampler2D uPatternTexture;
+        uniform float uPatternType;
         varying vec3 vLocalPos;
         varying vec3 vLocalNormal;
         varying vec2 vUv;
+
+        // Procedural Noise for Camo
+        float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+        float noise(vec2 p) {
+          vec2 i = floor(p); vec2 f = fract(p);
+          f = f*f*(3.0-2.0*f);
+          return mix(mix(hash(i + vec2(0,0)), hash(i + vec2(1,0)), f.x),
+                     mix(hash(i + vec2(0,1)), hash(i + vec2(1,1)), f.x), f.y);
+        }
+
         ${shader.fragmentShader}
       `.replace(
         `vec4 diffuseColor = vec4( diffuse, opacity );`,
@@ -268,6 +280,21 @@ function MeshPart({ node, state }) {
         }
         
         vec3 finalColor = baseColor;
+        
+        // 1. Procedural Global Patterns
+        float patStrength = 0.0;
+        if (uPatternType > 0.5 && uPatternType < 1.5) { // CARBON
+          vec2 grid = fract(vUv * 40.0);
+          patStrength = step(0.5, grid.x) == step(0.5, grid.y) ? 0.1 : -0.1;
+        } else if (uPatternType > 1.5 && uPatternType < 2.5) { // CAMO
+          patStrength = (noise(vUv * 10.0) - 0.5) * 0.4;
+        } else if (uPatternType > 2.5) { // DOTS
+          vec2 grid = fract(vUv * 30.0) - 0.5;
+          patStrength = length(grid) < 0.3 ? -0.2 : 0.0;
+        }
+        finalColor += patStrength;
+
+        // 2. Mesh-Specific Custom Patterns
         if (uHasPattern > 0.5) {
           vec3 blending = abs(normalize(vLocalNormal));
           blending = pow(blending, vec3(16.0));
@@ -283,9 +310,9 @@ function MeshPart({ node, state }) {
           float isBgWhite = step(0.5, cornerSample.r);
           
           if (isBgWhite > 0.5) {
-            finalColor = mix(uPatternColor, baseColor, patternSample.r);
+            finalColor = mix(uPatternColor, finalColor, patternSample.r);
           } else {
-            finalColor = mix(baseColor, uPatternColor, patternSample.r);
+            finalColor = mix(finalColor, uPatternColor, patternSample.r);
           }
         }
         vec4 diffuseColor = vec4( finalColor, opacity );
@@ -309,6 +336,16 @@ function MeshPart({ node, state }) {
     u.uMinY.value = node.geometry.boundingBox.min.y;
     u.uMaxY.value = node.geometry.boundingBox.max.y;
 
+    // Apply material finish (gloss/metallic/matte)
+    const roughness = finish === 'gloss' ? 0.1 : finish === 'metallic' ? 0.2 : 0.8;
+    const metalness = finish === 'metallic' ? 0.8 : 0.0;
+    material.roughness = roughness;
+    material.metalness = metalness;
+
+    // Handle Pattern (Combine global and local)
+    const pType = globalPattern === 'carbon' ? 1.0 : globalPattern === 'camo' ? 2.0 : globalPattern === 'dots' ? 3.0 : 0.0;
+    u.uPatternType.value = pType;
+
     if (state.pUrl) {
       new THREE.TextureLoader().load(state.pUrl, (tex) => {
         tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
@@ -319,22 +356,50 @@ function MeshPart({ node, state }) {
     } else {
       u.uHasPattern.value = 0.0;
     }
-  }, [state, material, node]);
+  }, [state, material, node, finish, globalPattern]);
 
   return <primitive object={node} material={material} />;
 }
 
 // ─── MODEL (with DecalGeometry-based text system from script1.js) ────────────
-function Model({ url, meshStates, onMeshesDetected, decals, selectedDecalId, setSelectedDecalId, updateDecal, removeDecal }) {
-  const { scene: rootScene } = useThree();
+function Model({ url, meshStates, onMeshesDetected, decals, selectedDecalId, setSelectedDecalId, updateDecal, removeDecal, finish, globalPattern, mouseFollow }) {
+  const { scene: rootScene, viewport } = useThree();
   const { scene } = useGLTF(url);
+  const clonedScene = useMemo(() => scene.clone(), [scene]);
   const decalMeshesRef = useRef({});
+  const meshRef = useRef();
+  const mouse = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    if (!mouseFollow) return;
+    const handleMove = (e) => {
+      mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    };
+    window.addEventListener('mousemove', handleMove);
+    return () => window.removeEventListener('mousemove', handleMove);
+  }, [mouseFollow]);
+
+
+  useFrame((state) => {
+    if (!meshRef.current) return;
+    if (mouseFollow) {
+      const targetX = mouse.current.x * 0.8;
+      const targetY = mouse.current.y * 0.3;
+      meshRef.current.rotation.y = THREE.MathUtils.lerp(meshRef.current.rotation.y, targetX, 0.05);
+      meshRef.current.rotation.x = THREE.MathUtils.lerp(meshRef.current.rotation.x, -targetY, 0.05);
+    } else {
+      // Gentle auto-rotation when mouse follow is OFF
+      meshRef.current.rotation.y = THREE.MathUtils.lerp(meshRef.current.rotation.y, 0, 0.05);
+      meshRef.current.rotation.x = THREE.MathUtils.lerp(meshRef.current.rotation.x, 0, 0.05);
+    }
+  });
 
   const meshes = useMemo(() => {
     const list = [];
-    scene.traverse(c => { if (c.isMesh) list.push(c); });
+    clonedScene.traverse(c => { if (c.isMesh) list.push(c); });
     return list;
-  }, [scene]);
+  }, [clonedScene]);
 
   // Detect meshes
   useEffect(() => {
@@ -387,7 +452,7 @@ function Model({ url, meshStates, onMeshesDetected, decals, selectedDecalId, set
       setSelectedDecalId(closestDecal.id);
       return; // Select, don't move
     }
-    
+
     const worldPoint = e.point.clone();
     const worldNormal = e.face.normal.clone()
       .transformDirection(e.object.matrixWorld)
@@ -542,36 +607,52 @@ function Model({ url, meshStates, onMeshesDetected, decals, selectedDecalId, set
     };
   }, [rootScene]);
 
+  // Explicitly cleanup decal GPU memory when component unmounts
+  // We DO NOT dispose of the main scene geometries because they are cached by useGLTF
+  useEffect(() => {
+    return () => {
+      Object.values(decalMeshesRef.current).forEach(m => {
+        rootScene.remove(m);
+        m.geometry.dispose();
+        m.material.dispose();
+      });
+      decalMeshesRef.current = {};
+    };
+  }, [rootScene]);
+
   return (
-    <group scale={1.8} onPointerDown={handleMeshClick}>
+    <group ref={meshRef} scale={1.8} onPointerDown={handleMeshClick}>
       {meshes.map(m => (
-        <MeshPart key={m.uuid} node={m} state={meshStates[m.name]} />
+        <MeshPart key={m.uuid} node={m} state={meshStates[m.name]} finish={finish} globalPattern={globalPattern} />
       ))}
     </group>
   );
 }
 
 // ─── MAIN VIEWER ─────────────────────────────────────────────────────────────
-const ModelViewer = ({ modelUrl, meshStates, onMeshesDetected, decals, selectedDecalId, setSelectedDecalId, updateDecal, removeDecal }) => {
+const ModelViewer = ({ modelUrl, meshStates, onMeshesDetected, decals, selectedDecalId, setSelectedDecalId, updateDecal, removeDecal, globalPattern, materialFinish, lightingPreset, mouseFollow }) => {
   const selectedDecal = decals.find(d => d.id === selectedDecalId);
 
   return (
     <div className="flex-1 w-full bg-white relative" style={{ height: '100%' }}>
       <Canvas camera={{ position: [0, 0, 2.5], fov: 42 }} gl={{ preserveDrawingBuffer: true, antialias: true }} onPointerMissed={() => setSelectedDecalId(null)}>
-        <ambientLight intensity={0.8} />
-        <spotLight position={[10, 15, 10]} angle={0.3} penumbra={1} intensity={2} />
-        <directionalLight position={[-5, 5, -5]} intensity={0.5} />
+        <ambientLight intensity={lightingPreset === 'night' ? 0.2 : 0.8} />
+        <spotLight position={[10, 15, 10]} angle={0.3} penumbra={1} intensity={lightingPreset === 'studio' ? 2.5 : 1.5} />
+        <directionalLight position={[-5, 5, -5]} intensity={lightingPreset === 'night' ? 0.1 : 0.5} />
         <Suspense fallback={<CoolLoader />}>
           <Center>
-            <Model 
-              url={modelUrl} 
-              meshStates={meshStates} 
+            <Model
+              url={modelUrl}
+              meshStates={meshStates}
               onMeshesDetected={onMeshesDetected}
               decals={decals}
               selectedDecalId={selectedDecalId}
               setSelectedDecalId={setSelectedDecalId}
               updateDecal={updateDecal}
               removeDecal={removeDecal}
+              finish={materialFinish}
+              globalPattern={globalPattern}
+              mouseFollow={mouseFollow}
             />
           </Center>
 
@@ -601,10 +682,10 @@ const ModelViewer = ({ modelUrl, meshStates, onMeshesDetected, decals, selectedD
             </Html>
           )}
 
-          <Environment preset="city" />
+          <Environment preset={lightingPreset || "city"} />
           <ContactShadows position={[0, -1.5, 0]} opacity={0.4} scale={15} blur={2.5} far={4} />
         </Suspense>
-        <CameraController />
+        <CameraController mouseFollow={mouseFollow} />
       </Canvas>
     </div>
   );
