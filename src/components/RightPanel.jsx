@@ -565,7 +565,7 @@ const StudioConfigTab = ({
             <button 
               key={p} 
               onClick={() => setGlobalPattern(p === 'none' ? null : p)} 
-              className={`py-3 rounded-xl text-[9px] font-black uppercase tracking-widest border-2 transition-all ${globalPattern === p || (p === 'none' && !globalPattern) ? 'border-[#00b0f0] bg-blue-50 text-[#00b0f0] shadow-sm' : 'border-gray-100 text-gray-400 hover:border-gray-300'}`}
+              className={`py-3 rounded-md text-[9px] font-black uppercase tracking-widest border-2 transition-all ${globalPattern === p || (p === 'none' && !globalPattern) ? 'border-[#00b0f0] bg-blue-50 text-[#00b0f0] shadow-sm' : 'border-gray-100 text-gray-400 hover:border-gray-300'}`}
             >
               {p}
             </button>
@@ -605,7 +605,7 @@ const StudioConfigTab = ({
         <div className="space-y-4">
           <button 
             onClick={() => setMouseFollow(!mouseFollow)} 
-            className={`w-full py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest border-2 transition-all flex items-center justify-center gap-3 ${mouseFollow ? 'bg-[#00b0f0] text-white border-[#00b0f0] shadow-lg shadow-blue-500/20' : 'bg-white text-gray-400 border-gray-200 hover:border-gray-300'}`}
+            className={`w-full py-4 rounded-lg text-[10px] font-black uppercase tracking-widest border-2 transition-all flex items-center justify-center gap-3 ${mouseFollow ? 'bg-[#00b0f0] text-white border-[#00b0f0] shadow-lg shadow-blue-500/20' : 'bg-white text-gray-400 border-gray-200 hover:border-gray-300'}`}
           >
             <div className={`w-2 h-2 rounded-full ${mouseFollow ? 'bg-white animate-pulse' : 'bg-gray-200'}`} />
             360 Mouse Follow: {mouseFollow ? 'ON' : 'OFF'}
@@ -654,7 +654,7 @@ const CheckoutRosterTab = ({ roster, setRoster }) => {
         </div>
 
         {/* Personalization Toggle */}
-        <div className="flex items-center justify-between bg-gray-50 rounded-xl p-3 border border-gray-100">
+        <div className="flex items-center justify-between bg-gray-50 rounded-lg p-3 border border-gray-100">
           <div className="flex items-center gap-3">
             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${isPersonalized ? 'bg-blue-100 text-[#00b0f0]' : 'bg-gray-200 text-gray-400'}`}>
               <BiText />
@@ -675,7 +675,7 @@ const CheckoutRosterTab = ({ roster, setRoster }) => {
 
       <div className="flex-1 overflow-y-auto p-4 space-y-3 right-scroll">
         {roster.map((row, index) => (
-          <div key={row.id} className="bg-white rounded-xl border border-gray-100 p-3 shadow-sm relative group animate-fade-in">
+          <div key={row.id} className="bg-white rounded-lg border border-gray-100 p-3 shadow-sm relative group animate-fade-in">
             <div className="flex items-center gap-3">
               <div className="w-6 h-6 rounded-full bg-gray-50 flex items-center justify-center text-[9px] font-black text-gray-400 border border-gray-100 flex-shrink-0">
                 {index + 1}
@@ -724,7 +724,7 @@ const CheckoutRosterTab = ({ roster, setRoster }) => {
                     </div>
                   </>
                 ) : (
-                  <div className="col-span-12 flex items-center justify-between bg-gray-50 rounded-lg px-4 py-2">
+                    <div className="col-span-12 flex items-center justify-between bg-gray-50 rounded-md px-4 py-2">
                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Select Unit Size</span>
                     <div className="flex items-center gap-4">
                       <div className="relative min-w-[80px]">

@@ -102,7 +102,7 @@ const LandingPage = ({
         </div>
 
         {/* ── MASTER CONTROL PANEL (New Section) ── */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-20 p-8 bg-gray-50/50 rounded-[2rem] border border-gray-100">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-20 p-8 bg-gray-50/50 rounded-xl border border-gray-100">
           
           {/* Fabric Patterns */}
           <div className="flex flex-col gap-4">
@@ -111,7 +111,7 @@ const LandingPage = ({
             </div>
             <div className="flex flex-wrap gap-2">
               {['none', 'carbon', 'camo', 'dots'].map(p => (
-                <button key={p} onClick={() => setGlobalPattern(p === 'none' ? null : p)} className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${globalPattern === p || (p === 'none' && !globalPattern) ? 'bg-gray-900 text-white border-gray-900 shadow-lg' : 'bg-white text-gray-400 border-gray-200 hover:border-gray-900'}`}>{p}</button>
+                <button key={p} onClick={() => setGlobalPattern(p === 'none' ? null : p)} className={`px-4 py-2 rounded-md text-[9px] font-black uppercase tracking-widest border transition-all ${globalPattern === p || (p === 'none' && !globalPattern) ? 'bg-gray-900 text-white border-gray-900 shadow-lg' : 'bg-white text-gray-400 border-gray-200 hover:border-gray-900'}`}>{p}</button>
               ))}
             </div>
           </div>
@@ -123,7 +123,7 @@ const LandingPage = ({
             </div>
             <div className="flex flex-wrap gap-2">
               {['matte', 'gloss', 'metallic'].map(f => (
-                <button key={f} onClick={() => setMaterialFinish(f)} className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${materialFinish === f ? 'bg-gray-900 text-white border-gray-900 shadow-lg' : 'bg-white text-gray-400 border-gray-200 hover:border-gray-900'}`}>{f}</button>
+                <button key={f} onClick={() => setMaterialFinish(f)} className={`px-4 py-2 rounded-md text-[9px] font-black uppercase tracking-widest border transition-all ${materialFinish === f ? 'bg-gray-900 text-white border-gray-900 shadow-lg' : 'bg-white text-gray-400 border-gray-200 hover:border-gray-900'}`}>{f}</button>
               ))}
             </div>
           </div>
@@ -135,7 +135,7 @@ const LandingPage = ({
             </div>
             <div className="flex flex-wrap gap-2">
               {['city', 'studio', 'night'].map(l => (
-                <button key={l} onClick={() => setLightingPreset(l)} className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${lightingPreset === l ? 'bg-gray-900 text-white border-gray-900 shadow-lg' : 'bg-white text-gray-400 border-gray-200 hover:border-gray-900'}`}>{l}</button>
+                <button key={l} onClick={() => setLightingPreset(l)} className={`px-4 py-2 rounded-md text-[9px] font-black uppercase tracking-widest border transition-all ${lightingPreset === l ? 'bg-gray-900 text-white border-gray-900 shadow-lg' : 'bg-white text-gray-400 border-gray-200 hover:border-gray-900'}`}>{l}</button>
               ))}
             </div>
           </div>
@@ -145,7 +145,7 @@ const LandingPage = ({
             <div className="flex items-center gap-2 text-[10px] font-black text-gray-900 uppercase tracking-widest">
               <HiOutlineCursorClick className="text-blue-500" /> Interaction
             </div>
-            <button onClick={() => setMouseFollow(!mouseFollow)} className={`w-full py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${mouseFollow ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-500/20' : 'bg-white text-gray-400 border-gray-200'}`}>
+            <button onClick={() => setMouseFollow(!mouseFollow)} className={`w-full py-2 rounded-md text-[9px] font-black uppercase tracking-widest border transition-all ${mouseFollow ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-500/20' : 'bg-white text-gray-400 border-gray-200'}`}>
               360 Mouse Follow: {mouseFollow ? 'ON' : 'OFF'}
             </button>
           </div>
@@ -155,7 +155,7 @@ const LandingPage = ({
         <div className="flex items-center gap-4 mb-20 overflow-x-auto pb-4 scrollbar-hide">
           <span className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em] whitespace-nowrap mr-6">Designer Presets:</span>
           {themes.map(t => (
-            <button key={t.name} onClick={() => applyTheme(t)} className="flex items-center gap-3 px-6 py-3 bg-white border border-gray-100 rounded-2xl hover:border-blue-500 transition-all group shrink-0 shadow-sm hover:shadow-md">
+            <button key={t.name} onClick={() => applyTheme(t)} className="flex items-center gap-3 px-6 py-3 bg-white border border-gray-100 rounded-lg hover:border-blue-500 transition-all group shrink-0 shadow-sm hover:shadow-md">
               <div className="flex gap-1">
                 <div className="w-3 h-3 rounded-full border border-gray-100" style={{ backgroundColor: t.p }} />
                 <div className="w-3 h-3 rounded-full border border-gray-100" style={{ backgroundColor: t.s }} />
@@ -180,7 +180,7 @@ const LandingPage = ({
               <h2 className="text-4xl font-black text-gray-900 uppercase tracking-tighter">Elite Gallery</h2>
             </div>
             {comparing.length > 0 && (
-              <div className="flex items-center gap-4 bg-blue-50 px-4 py-2 rounded-full border border-blue-100 animate-fade-in">
+              <div className="flex items-center gap-4 bg-blue-50 px-4 py-2 rounded-lg border border-blue-100 animate-fade-in">
                 <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Compare Mode ({comparing.length}/2)</span>
                 <button onClick={() => setComparing([])} className="text-blue-400 hover:text-blue-600"><HiOutlineX /></button>
               </div>
@@ -191,7 +191,7 @@ const LandingPage = ({
             {designs.map((design, idx) => (
               <div key={design.id} className={`group cursor-pointer transition-all duration-500 ${comparing.includes(design.id) ? 'scale-105' : ''}`}>
                 <div 
-                  className={`aspect-[3.5/5] relative bg-[#fcfcfc] rounded-2xl border-2 transition-all duration-500 overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.02)] group-hover:shadow-[0_30px_70px_rgba(0,0,0,0.08)] group-hover:-translate-y-2 ${comparing.includes(design.id) ? 'border-blue-500 ring-4 ring-blue-500/10' : 'border-gray-100 hover:border-blue-500'}`}
+                  className={`aspect-[3.5/5] relative bg-[#fcfcfc] rounded-lg border-2 transition-all duration-500 overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.02)] group-hover:shadow-[0_30px_70px_rgba(0,0,0,0.08)] group-hover:-translate-y-2 ${comparing.includes(design.id) ? 'border-blue-500 ring-4 ring-blue-500/10' : 'border-gray-100 hover:border-blue-500'}`}
                   onClick={() => onSelectDesign(design)}
                 >
                   <DesignPreview 
@@ -202,7 +202,7 @@ const LandingPage = ({
                     pattern={globalPattern} lighting={lightingPreset} finish={materialFinish} mouseFollow={mouseFollow}
                   />
                   <div className="absolute top-4 left-4 flex gap-2">
-                    <span className="px-2 py-1 bg-white/80 backdrop-blur-md rounded-lg text-[8px] font-black text-gray-400 border border-gray-100 uppercase tracking-widest">{design.id}</span>
+                    <span className="px-2 py-1 bg-white/80 backdrop-blur-md rounded-md text-[8px] font-black text-gray-400 border border-gray-100 uppercase tracking-widest">{design.id}</span>
                   </div>
                   
                   {/* Compare Action */}
@@ -214,7 +214,7 @@ const LandingPage = ({
                   </button>
 
                   <div className="absolute bottom-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0">
-                    <div className="flex items-center gap-3 bg-gray-900 text-white px-6 py-2.5 rounded-full shadow-2xl">
+                    <div className="flex items-center gap-3 bg-gray-900 text-white px-6 py-2.5 rounded-md shadow-2xl">
                       <span className="text-[9px] font-black uppercase tracking-widest">Customize</span>
                       <HiArrowRight className="text-xs" />
                     </div>
