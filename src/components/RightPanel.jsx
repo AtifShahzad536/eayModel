@@ -878,9 +878,6 @@ const RightPanel = ({
           <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
           <span className="text-[8px] font-bold text-gray-400 uppercase tracking-widest">Connected to 3D Viewport</span>
         </div>
-        <button className="px-3 py-1 bg-[#00b0f0] text-white text-[9px] font-black uppercase tracking-widest rounded shadow-sm hover:bg-[#0090d0] transition-colors">
-          Next Step
-        </button>
       </div>
     </div>
   );
