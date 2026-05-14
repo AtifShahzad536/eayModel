@@ -35,6 +35,15 @@ function App() {
     setView('builder');
   };
 
+  useEffect(() => {
+    const handleImport = (e) => {
+      setSelectedDesign(prev => ({ ...prev, modelUrl: e.detail }));
+      setView('builder');
+    };
+    window.addEventListener('eay:importModel', handleImport);
+    return () => window.removeEventListener('eay:importModel', handleImport);
+  }, []);
+
   return (
     <div className="w-screen h-screen bg-white flex flex-col overflow-hidden">
       <Navbar onBack={view === 'builder' ? () => {

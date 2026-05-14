@@ -1,9 +1,21 @@
-import React, { Suspense, useMemo, useRef, useEffect } from 'react';
+import React, { Suspense, useMemo, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, Environment, Center, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
 
-function Model({ url, mapping, colors, pattern, finish, mouseFollow }) {
+// Skeleton shimmer card shown while model loads
+const SkeletonCard = () => (
+  <div style={{
+    position: 'absolute', inset: 0,
+    background: 'linear-gradient(110deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)',
+    backgroundSize: '200% 100%',
+    animation: 'skeletonShimmer 1.4s infinite linear',
+    borderRadius: 'inherit',
+    zIndex: 10,
+  }} />
+);
+
+function Model({ url, mapping, colors, pattern, finish, mouseFollow, onLoaded }) {
   const { scene } = useGLTF(url);
   const meshRef = useRef();
   const mouse = useRef({ x: 0, y: 0 });
@@ -146,8 +158,13 @@ function Model({ url, mapping, colors, pattern, finish, mouseFollow }) {
     }
   });
 
-  // No manual disposal of clonedScene here to avoid breaking shared geometries in useGLTF cache
-
+  // Signal parent that model is ready after first frame
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      if (onLoaded) onLoaded();
+    });
+    return () => cancelAnimationFrame(id);
+  }, [clonedScene]); // eslint-disable-line
 
   return (
     <group ref={meshRef}>
@@ -157,6 +174,8 @@ function Model({ url, mapping, colors, pattern, finish, mouseFollow }) {
 }
 
 const DesignPreview = ({ modelUrl, mapping, primaryColor, primaryIsGrad, primaryColor2, secondaryColor, secondaryIsGrad, secondaryColor2, thirdColor, thirdIsGrad, thirdColor2, pattern, lighting, finish, mouseFollow }) => {
+  const [loaded, setLoaded] = useState(false);
+
   const colors = useMemo(() => ({
     primary: { color: primaryColor, isGrad: primaryIsGrad, color2: primaryColor2 },
     secondary: { color: secondaryColor, isGrad: secondaryIsGrad, color2: secondaryColor2 },
@@ -164,11 +183,15 @@ const DesignPreview = ({ modelUrl, mapping, primaryColor, primaryIsGrad, primary
   }), [primaryColor, primaryIsGrad, primaryColor2, secondaryColor, secondaryIsGrad, secondaryColor2, thirdColor, thirdIsGrad, thirdColor2]);
 
   return (
-    <div className="w-full h-full bg-transparent">
+    <div className="w-full h-full bg-transparent" style={{ position: 'relative' }}>
+      {/* Shimmer skeleton: visible until model is ready */}
+      {!loaded && <SkeletonCard />}
+
       <Canvas
         camera={{ position: [0, 0, 4.2], fov: 30 }}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         dpr={[1, 2]}
+        style={{ opacity: loaded ? 1 : 0, transition: 'opacity 0.4s ease' }}
       >
         <ambientLight intensity={lighting === 'night' ? 0.2 : 0.6} />
         <spotLight position={[10, 15, 10]} angle={0.3} penumbra={1} intensity={lighting === 'studio' ? 2 : 1} />
@@ -177,12 +200,21 @@ const DesignPreview = ({ modelUrl, mapping, primaryColor, primaryIsGrad, primary
             <Model
               url={modelUrl} mapping={mapping} colors={colors}
               pattern={pattern} finish={finish} mouseFollow={mouseFollow}
+              onLoaded={() => setLoaded(true)}
             />
           </Center>
           <Environment preset={lighting || 'city'} />
           <ContactShadows position={[0, -1.3, 0]} opacity={0.3} scale={6} blur={2.5} far={4} />
         </Suspense>
       </Canvas>
+
+      {/* Inject skeleton keyframe animation once */}
+      <style>{`
+        @keyframes skeletonShimmer {
+          0%   { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+      `}</style>
     </div>
   );
 };
