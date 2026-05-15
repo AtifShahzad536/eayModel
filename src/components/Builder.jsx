@@ -68,16 +68,15 @@ const Builder = ({
     }));
   };
 
-  const addDecal = (decal) => {
+  const addDecal = (type, text, imageUrl) => {
     const newDecal = {
       id: Date.now().toString(),
-      type: decal.type || 'text',
-      text: decal.text || 'TEXT',
-      imageUrl: decal.imageUrl || null,
+      type: type || 'text',
+      text: text || (type === 'image' ? 'Logo' : 'TEXT'),
+      imageUrl: imageUrl || null,
       color: '#ffffff',
       font: 'Outfit',
-      decalScale: 0.15,
-      ...decal
+      decalScale: type === 'image' ? 0.12 : 0.15,
     };
     setDecals(prev => [...prev, newDecal]);
     setSelectedDecalId(newDecal.id);
@@ -91,6 +90,22 @@ const Builder = ({
     setDecals(prev => prev.filter(d => d.id !== id));
     if (selectedDecalId === id) setSelectedDecalId(null);
   };
+
+  useEffect(() => {
+    const handleMoveDecal = (e) => {
+      if (selectedDecalId) {
+        setDecals(prev => prev.map(d => d.id === selectedDecalId ? {
+          ...d,
+          worldPoint: e.detail.point,
+          worldNormal: e.detail.normal,
+          meshId: e.detail.meshId
+        } : d));
+      }
+    };
+
+    window.addEventListener('eay:moveDecal', handleMoveDecal);
+    return () => window.removeEventListener('eay:moveDecal', handleMoveDecal);
+  }, [selectedDecalId]);
 
   return (
     <div className="flex-1 flex flex-col md:flex-row overflow-hidden bg-white">
