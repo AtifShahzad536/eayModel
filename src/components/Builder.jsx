@@ -107,6 +107,47 @@ const Builder = ({
     return () => window.removeEventListener('eay:moveDecal', handleMoveDecal);
   }, [selectedDecalId]);
 
+  useEffect(() => {
+    const handleResetAll = () => {
+      setMeshStates(prev => {
+        const next = { ...prev };
+        meshes.forEach(m => {
+          let type = 'Body';
+          if (m.display.includes('Neck')) type = 'Neck';
+          else if (m.display.includes('Sleeve')) type = m.display.includes('R') ? 'R_Sleeve' : 'L_Sleeve';
+          else if (m.display.includes('Front')) type = 'Front';
+          else if (m.display.includes('Back')) type = 'Back';
+
+          const colorKey = design.mapping[type] || design.mapping['Body'] || 'primary';
+          const config = initialColors[colorKey];
+
+          next[m.id] = {
+            color: config.color,
+            isGrad: config.isGrad,
+            grad1: config.color2,
+            grad2: config.color,
+            pColor: '#ffffff',
+            pUrl: null
+          };
+        });
+        return next;
+      });
+      window.dispatchEvent(new CustomEvent('eay:resetCamera'));
+    };
+
+    const handleSave = () => {
+      console.log('Saving design...', { meshStates, decals });
+      alert('Design Saved Successfully!');
+    };
+
+    window.addEventListener('eay:resetAll', handleResetAll);
+    window.addEventListener('eay:save', handleSave);
+    return () => {
+      window.removeEventListener('eay:resetAll', handleResetAll);
+      window.removeEventListener('eay:save', handleSave);
+    };
+  }, [meshes, design, initialColors, meshStates, decals]);
+
   return (
     <div className="flex-1 flex flex-col md:flex-row overflow-hidden bg-white">
       <LeftPanel

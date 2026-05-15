@@ -40,7 +40,7 @@ export const designs = [
   {
     id: 'D1',
     name: 'CLOSER / J-0002',
-    modelUrl: '/shirt.glb',
+    modelUrl: '/AMERICAN.glb',
     mapping: {
       'Body': 'primary',
       'Front': 'primary',
