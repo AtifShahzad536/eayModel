@@ -37,6 +37,7 @@ function Model({ url, mapping, colors, pattern, finish, mouseFollow, onLoaded })
         node.material = node.material.clone();
         node.material.userData.uniforms = {
           uColor: { value: new THREE.Color('#ffffff') },
+          uOriginalColor: { value: new THREE.Color(node.material.color) },
           uIsGradient: { value: 0.0 },
           uColor1: { value: new THREE.Color('#ffffff') },
           uColor2: { value: new THREE.Color('#ffffff') },
@@ -53,6 +54,7 @@ function Model({ url, mapping, colors, pattern, finish, mouseFollow, onLoaded })
           );
           shader.fragmentShader = `
             uniform vec3 uColor;
+            uniform vec3 uOriginalColor;
             uniform float uIsGradient;
             uniform vec3 uColor1;
             uniform vec3 uColor2;
@@ -76,6 +78,11 @@ function Model({ url, mapping, colors, pattern, finish, mouseFollow, onLoaded })
             'vec4 diffuseColor = vec4( diffuse, opacity );',
             `
             vec3 baseColor = uColor;
+            // If it's the default white and not a gradient, use original GLB colors
+            if (uIsGradient < 0.5 && distance(uColor, vec3(1.0)) < 0.001) {
+              baseColor = uOriginalColor;
+            }
+
             if (uIsGradient > 0.5) {
               float t = (vLocalPos.y - uMinY) / (uMaxY - uMinY);
               t = clamp(t, 0.0, 1.0);

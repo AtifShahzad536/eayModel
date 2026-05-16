@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { HiOutlineFolderOpen, HiOutlineSaveAs, HiOutlineDownload, HiOutlineCubeTransparent } from 'react-icons/hi';
+import { HiOutlineCubeTransparent, HiOutlineArrowLeft } from 'react-icons/hi';
 import { VscHistory, VscEdit } from 'react-icons/vsc';
 
-const Navbar = ({ onBack }) => {
+const Navbar = ({ onBack, backTo }) => {
   const [activeMenu, setActiveMenu] = useState(null);
   const barRef = useRef(null);
 
@@ -19,7 +19,6 @@ const Navbar = ({ onBack }) => {
   const menuData = [
     {
       label: 'File',
-      icon: <HiOutlineFolderOpen className="text-lg" />,
       items: [
         {
           label: 'Import Model (.glb)', icon: <HiOutlineCubeTransparent />, action: () => {
@@ -36,75 +35,117 @@ const Navbar = ({ onBack }) => {
             input.click();
           }
         },
-        { label: 'Save Design', icon: <HiOutlineSaveAs />, action: () => window.dispatchEvent(new CustomEvent('eay:save')) },
-        { label: 'Export PNG', icon: <HiOutlineDownload />, action: () => window.dispatchEvent(new CustomEvent('eay:export')) },
+        { label: 'Save Design', action: () => window.dispatchEvent(new CustomEvent('eay:save')) },
+        { label: 'Export PNG', action: () => window.dispatchEvent(new CustomEvent('eay:export')) },
       ]
     },
     {
       label: 'Edit',
-      icon: <VscEdit className="text-lg" />,
       items: [
         { label: 'Reset All Colors', icon: <VscHistory />, action: () => window.dispatchEvent(new CustomEvent('eay:resetAll')) },
       ]
+    },
+    {
+        label: 'View',
+        items: [
+          { label: 'Toggle HUD', action: () => window.dispatchEvent(new CustomEvent('eay:toggleHUD')) },
+        ]
     }
   ];
+
+  const handleExit = () => {
+    if (onBack) {
+      onBack();
+    }
+  };
 
   return (
     <div
       ref={barRef}
-      className="w-full h-8 bg-[#f5f5f5] border-b border-[#e0e0e0] flex items-stretch select-none z-50 flex-shrink-0"
-      style={{ fontFamily: "'Inter', sans-serif" }}
+      className="w-full h-9 bg-white border-b border-gray-200 flex items-stretch select-none z-[70] flex-shrink-0 relative"
+      style={{ fontFamily: "'Outfit', sans-serif" }}
     >
-      {/* App Branding */}
-      <div className="flex items-center px-4 gap-2 border-r border-[#e0e0e0]">
-        {onBack ? (
-          <button 
-            onClick={onBack}
-            className="flex items-center gap-1.5 px-2 py-0.5 hover:bg-gray-200 rounded transition-colors mr-2 group"
-          >
-            <span className="text-[10px] text-gray-400 group-hover:text-blue-500 transition-colors">◀</span>
-            <span className="text-[9px] font-black text-gray-400 group-hover:text-gray-900 uppercase tracking-tighter transition-colors">Back</span>
-          </button>
-        ) : (
-          <div className="w-4 h-4 bg-[#00b0f0] rounded-sm flex items-center justify-center">
-            <span className="text-white font-black text-[9px] leading-none">E</span>
-          </div>
-        )}
-        <span className="text-[11px] font-bold text-[#222] tracking-tight">EAY Builder</span>
+      {/* ── Navigation / Exit Logic ── */}
+      <div className="flex items-stretch border-r border-gray-100">
+         <button 
+           onClick={handleExit}
+           className="px-4 flex items-center gap-2 hover:bg-gray-100 transition-colors border-r border-gray-100 group cursor-pointer"
+           title="Return to Library"
+         >
+            <HiOutlineArrowLeft className="text-gray-400 group-hover:text-blue-600 transition-colors" size={14} />
+            <span className="text-[10px] font-bold text-gray-500 group-hover:text-gray-900 uppercase tracking-tighter">Exit</span>
+         </button>
       </div>
 
-      {/* Menus */}
-      {menuData.map((menu) => (
-        <div key={menu.label} className="relative flex items-stretch">
-          <button
-            className={`px-3.5 h-full text-[12px] font-medium tracking-tight flex items-center gap-2 transition-colors duration-100 outline-none
-              ${activeMenu === menu.label ? 'bg-[#00b0f0] text-white' : 'text-[#333] hover:bg-[#e8e8e8]'}`}
-            onMouseDown={() => setActiveMenu(prev => prev === menu.label ? null : menu.label)}
-            onMouseEnter={() => activeMenu && setActiveMenu(menu.label)}
-          >
-            {menu.label}
-          </button>
-
-          {activeMenu === menu.label && (
-            <div className="absolute top-full left-0 mt-0 w-56 bg-white border border-[#e0e0e0] rounded-b-lg shadow-xl z-50 py-1 fade-up">
-              {menu.items.map((item, i) => (
-                <button
-                  key={i}
-                  onClick={() => { item.action(); setActiveMenu(null); }}
-                  className="w-full text-left px-4 py-2 text-[12px] text-[#333] hover:bg-[#f0f9ff] hover:text-[#00b0f0] flex items-center gap-3 transition-colors duration-100"
-                >
-                  <span className="text-base text-[#888]">{item.icon}</span>
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          )}
+      {/* ── VS Code Style Logo & Branding ── */}
+      <div className="flex items-center px-4 gap-4 border-r border-gray-100 bg-gray-50/10">
+        <div className="flex items-center gap-2.5">
+           <div className="w-4 h-4 bg-blue-600 flex items-center justify-center flex-shrink-0">
+             <span className="text-white font-bold text-[9px]">E</span>
+           </div>
+           <span className="hidden sm:inline text-[10px] font-bold text-gray-900 uppercase tracking-[0.1em] whitespace-nowrap">
+             Elite <span className="text-blue-600">Studio</span>
+           </span>
         </div>
-      ))}
+      </div>
 
-      <div className="ml-auto flex items-center gap-3 px-4 border-l border-[#e0e0e0]">
-        <span className="text-[10px] text-[#aaa] font-medium uppercase tracking-widest">v1.0.4 · Stable</span>
-        <div className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
+      {/* ── Editor Menu Bar ── */}
+      <div className="flex items-stretch">
+        {menuData.map((menu) => (
+          <div key={menu.label} className="relative flex items-stretch">
+            <button
+              className={`px-3 h-full text-[10px] font-medium tracking-wide flex items-center gap-1.5 transition-colors outline-none cursor-pointer
+                ${activeMenu === menu.label ? 'bg-gray-100 text-blue-600' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
+              onClick={() => setActiveMenu(prev => prev === menu.label ? null : menu.label)}
+              onMouseEnter={() => activeMenu && setActiveMenu(menu.label)}
+            >
+              {menu.label}
+            </button>
+
+            {activeMenu === menu.label && (
+              <div className="absolute top-full left-0 mt-0 w-max min-w-[220px] bg-white border border-gray-200 shadow-xl z-50 py-1 animate-in fade-in slide-in-from-top-1 duration-100">
+                {menu.items.map((item, i) => (
+                  <button
+                    key={i}
+                    onClick={() => { item.action?.(); setActiveMenu(null); }}
+                    className="w-full text-left px-4 py-2 text-[10px] font-medium text-gray-700 hover:bg-blue-600 hover:text-white flex items-center justify-between group transition-colors duration-75 cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3">
+                      {item.icon && <span className="text-xs opacity-60 group-hover:opacity-100">{item.icon}</span>}
+                      <span className="tracking-wide whitespace-nowrap">{item.label}</span>
+                    </div>
+                    <span className="text-[8px] opacity-40 group-hover:opacity-60 ml-8 tracking-tighter">
+                       {menu.label === 'File' && i === 1 ? 'CTRL+S' : ''}
+                       {menu.label === 'Edit' && i === 0 ? 'CTRL+R' : ''}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* ── Active File / Project Name Indicator ── */}
+      <div className="hidden md:flex flex-1 items-center justify-center pointer-events-none">
+         <div className="px-3 py-0.5 bg-gray-50 border border-gray-100 rounded-none flex items-center gap-2">
+            <span className="text-[8px] font-bold text-gray-400 uppercase tracking-[0.2em]">Active Workspace:</span>
+            <span className="text-[9px] font-semibold text-gray-700 uppercase tracking-widest">Standalone_Elite_Context</span>
+         </div>
+      </div>
+
+      {/* ── System Status ── */}
+      <div className="ml-auto flex items-center gap-3 px-4">
+        <div className="hidden lg:flex items-center gap-3">
+          <div className="flex flex-col items-end leading-none">
+            <span className="text-[7px] font-bold text-gray-300 uppercase tracking-[0.2em]">Build</span>
+            <span className="text-[8px] font-semibold text-gray-500 tracking-wider">v1.0.4-PRO</span>
+          </div>
+          <div className="flex items-center gap-1.5 px-2 py-0.5 bg-green-50 border border-green-100">
+            <div className="w-1 h-1 rounded-none bg-green-500 animate-pulse" />
+            <span className="text-[8px] font-bold text-green-600 uppercase">Live</span>
+          </div>
+        </div>
       </div>
     </div>
   );

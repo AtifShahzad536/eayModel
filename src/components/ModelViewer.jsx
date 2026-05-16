@@ -403,30 +403,46 @@ function Model({ url, meshStates, onMeshesDetected, decals, selectedDecalId, set
 
   // Detect meshes
   useEffect(() => {
-    const meshInfo = meshes.map(m => {
-      m.geometry.computeBoundingBox();
-      const center = new THREE.Vector3();
-      m.geometry.boundingBox.getCenter(center);
-      const { x, y, z } = center;
-      let displayName = m.name;
-      if (y > 0.6) displayName = "Mesh";
-      else if (Math.abs(x) > 0.4) displayName = x > 0 ? "R Sleeve" : "L Sleeve";
-      else if (z > 0.05) displayName = "Front";
-      else if (z < -0.05) displayName = "Back";
-      else displayName = "Body";
-      return { id: m.name, display: displayName };
+    // 1. Get the overall bounding box of all meshes combined
+    const fullBox = new THREE.Box3();
+    meshes.forEach(m => {
+      fullBox.expandByObject(m);
     });
+    const fullCenter = new THREE.Vector3();
+    fullBox.getCenter(fullCenter);
+    const fullSize = new THREE.Vector3();
+    fullBox.getSize(fullSize);
 
     const nameCounts = {};
-    const finalMeshInfo = meshInfo.map(info => {
-      nameCounts[info.display] = (nameCounts[info.display] || 0) + 1;
-      const finalName = nameCounts[info.display] > 1
-        ? `${info.display} ${nameCounts[info.display]}`
-        : info.display;
-      return { id: info.id, display: finalName };
+    const finalMeshInfo = meshes.map(m => {
+      // 2. Calculate relative spatial position to determine the part name dynamically
+      const box = new THREE.Box3().setFromObject(m);
+      const center = new THREE.Vector3();
+      box.getCenter(center);
+      
+      // Normalized coordinates from -0.5 to 0.5 relative to the whole model
+      const nx = fullSize.x > 0 ? (center.x - fullCenter.x) / fullSize.x : 0;
+      const ny = fullSize.y > 0 ? (center.y - fullCenter.y) / fullSize.y : 0;
+      const nz = fullSize.z > 0 ? (center.z - fullCenter.z) / fullSize.z : 0;
+
+      let partName = "Body Panel";
+      if (ny > 0.3) partName = "Collar"; // Top 20%
+      else if (Math.abs(nx) > 0.25) partName = nx > 0 ? "Right Sleeve" : "Left Sleeve"; // Outer sides
+      else if (nz > 0.1) partName = "Front Body";
+      else if (nz < -0.1) partName = "Back Body";
+      else partName = "Side Panel";
+
+      nameCounts[partName] = (nameCounts[partName] || 0) + 1;
+      const finalName = nameCounts[partName] > 1
+        ? `${partName} ${nameCounts[partName]}`
+        : partName;
+      
+      const originalHex = `#${m.material.color.getHexString()}`;
+      return { id: m.name, display: finalName, originalColor: originalHex };
     });
     onMeshesDetected(finalMeshInfo);
-  }, [meshes, onMeshesDetected]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [meshes]);
 
   // ─── Click-to-Place: dispatch world-space hit info (same as script1.js) ────
   const handleMeshClick = useCallback((e) => {

@@ -13,13 +13,13 @@ function App() {
   const [primaryIsGrad, setPrimaryIsGrad] = useState(false);
   const [primaryColor2, setPrimaryColor2] = useState('#ffffff');
 
-  const [secondaryColor, setSecondaryColor] = useState('#111111');
+  const [secondaryColor, setSecondaryColor] = useState('#ffffff');
   const [secondaryIsGrad, setSecondaryIsGrad] = useState(false);
-  const [secondaryColor2, setSecondaryColor2] = useState('#111111');
+  const [secondaryColor2, setSecondaryColor2] = useState('#ffffff');
 
-  const [thirdColor, setThirdColor] = useState('#555555');
+  const [thirdColor, setThirdColor] = useState('#ffffff');
   const [thirdIsGrad, setThirdIsGrad] = useState(false);
-  const [thirdColor2, setThirdColor2] = useState('#555555');
+  const [thirdColor2, setThirdColor2] = useState('#ffffff');
 
   // NEW: Elite Global Config States
   const [globalPattern, setGlobalPattern] = useState(null); // 'carbon', 'camo', 'dots'
@@ -37,7 +37,7 @@ function App() {
 
   useEffect(() => {
     const handleImport = (e) => {
-      setSelectedDesign(prev => ({ ...prev, modelUrl: e.detail }));
+      setSelectedDesign(prev => ({ ...prev, modelUrl: e.detail, isImported: true }));
       setView('builder');
     };
     window.addEventListener('eay:importModel', handleImport);
