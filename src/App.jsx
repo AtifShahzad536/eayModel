@@ -25,7 +25,7 @@ function App() {
   const [globalPattern, setGlobalPattern] = useState(null); // 'carbon', 'camo', 'dots'
   const [lightingPreset, setLightingPreset] = useState('city'); // 'city', 'studio', 'apartment'
   const [materialFinish, setMaterialFinish] = useState('matte'); // 'matte', 'gloss', 'metallic'
-  const [mouseFollow, setMouseFollow] = useState(true);
+  const [mouseFollow, setMouseFollow] = useState(false);
 
   // Transition logic
   const [refreshKey, setRefreshKey] = useState(0);
